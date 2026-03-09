@@ -19,17 +19,11 @@ import { SharedModule } from './shared/shared.module';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { DataTablesModule } from 'angular-datatables';
 import { NgSelectModule } from "@ng-select/ng-select";
-import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
-// import { CreateComponent } from './admin/screens/create/create.component';
-// import { SearchComponent } from './admin/screens/search/search.component';
 @NgModule({
 
   declarations: [
     AppComponent,
     LoginComponent,
-    ForgetpasswordComponent,
-    // CreateComponent,
-    // SearchComponent
 
 
   ],

@@ -6,7 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule,ReactiveFormsModule  } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { StudentModule } from './student/student.module'
-import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
+
 // import { CreateComponent } from './admin/screens/create-old/create.component';
 // import { SearchComponent } from './admin/screens/search-old/search.component';
 
@@ -19,10 +19,6 @@ const routes: Routes = [
   {
     path:'login',
     component:LoginComponent
-  },
-  {
-    path:'forgetpassword',
-    component:ForgetpasswordComponent
   },
   // {
   //   path:'create',
