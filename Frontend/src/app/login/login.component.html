@@ -1,0 +1,38 @@
+<main class="body">
+
+  <h1 class="page-title">JALA Academy</h1>
+  <p class="subtitle">Use the below details to login</p>
+  <p class="credentials">Email : training@jalaacademy.com</p>
+  <p class="credentials">Password : jobprogram</p>
+  <div class="highlight">Learn everything on Real-Time Scenarios. FREE for all.</div>
+
+  <div class="card">
+    <h4>Sign in</h4>
+
+    <div *ngIf="errorMessage" class="alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <div class="input-group">
+      <input
+        type="email"
+        placeholder="training@jalaacademy.com"
+        [(ngModel)]="enteredEmail"
+      />
+    </div>
+
+    <div class="input-group">
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="enteredPassword"
+      />
+    </div>
+
+    <div class="row-actions">
+      <button class="btn-signin" (click)="login()">Sign In</button>
+    </div>
+
+  </div>
+
+</main>

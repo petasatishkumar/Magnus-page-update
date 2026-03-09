@@ -1,0 +1,191 @@
+<main id="main" class="main">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h2>Employee <span class="sub-title">Search</span></h2>
+    <div class="breadcrumb">
+      <a href="#/admin/dashboard">Home</a> &gt;
+      <a href="#">Employee</a> &gt;
+      <span>Search</span>
+    </div>
+  </div>
+
+  <section class="form-section">
+
+    <!-- Search Bar -->
+    <div class="search-header">
+      <h4 class="section-title">Search Employee</h4>
+      <button class="btn-add" (click)="goToCreate()">Add Employee</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" [(ngModel)]="searchName" placeholder="Employee Name" />
+      </div>
+      <div class="form-group">
+        <label>Mobile No</label>
+        <input type="text" [(ngModel)]="searchMobile" placeholder="Mobile No" />
+      </div>
+      <div class="form-group btn-group-search">
+        <label>&nbsp;</label>
+        <div class="d-flex gap-8">
+          <button class="btn-search" (click)="search()">Search</button>
+          <button class="btn-clear" (click)="clear()">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Mobile No</th>
+            <th>Email Id</th>
+            <th>Gender</th>
+            <th>Birth Date</th>
+            <th>Country</th>
+            <th>City</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of pagedEmployees">
+            <td>{{ emp.firstName }}</td>
+            <td>{{ emp.lastName }}</td>
+            <td>{{ emp.mobile }}</td>
+            <td>{{ emp.email }}</td>
+            <td>
+              <span *ngIf="emp.gender === 'Female'">👩</span>
+              <span *ngIf="emp.gender === 'Male'">👨</span>
+            </td>
+            <td>{{ emp.dob }}</td>
+            <td>{{ emp.country }}</td>
+            <td>{{ emp.city }}</td>
+            <td class="action-btns">
+              <button class="btn-edit" (click)="editEmployee(emp)">Edit</button>
+              <button class="btn-delete" (click)="confirmDelete(emp)">Delete</button>
+            </td>
+          </tr>
+          <tr *ngIf="pagedEmployees.length === 0">
+            <td colspan="9" class="no-data">No records found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button (click)="goToPage(1)" [disabled]="currentPage === 1">First</button>
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+      <span>{{ currentPage }} of {{ totalPages }} Pages</span>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+      <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">Last</button>
+    </div>
+
+  </section>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal">
+    <div class="modal-box">
+      <button class="modal-close" (click)="cancelDelete()">&#10005;</button>
+      <div class="modal-icon">!</div>
+      <p class="modal-text">Are you sure you want to delete?</p>
+      <div class="modal-actions">
+        <button class="btn-yes" (click)="deleteEmployee()">Yes</button>
+        <button class="btn-no" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay" *ngIf="showEditModal">
+    <div class="modal-box edit-modal">
+      <button class="modal-close" (click)="cancelEdit()">&#10005;</button>
+
+      <div class="page-header" style="margin-bottom:16px;">
+        <h2>Employee <span class="sub-title">Edit</span></h2>
+      </div>
+
+      <h4 class="section-title">Employee Details</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" [(ngModel)]="editEmp.firstName" />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" [(ngModel)]="editEmp.lastName" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="editEmp.email" />
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Address</label>
+        <textarea [(ngModel)]="editEmp.address" rows="3"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="text" [(ngModel)]="editEmp.mobile" />
+        </div>
+        <div class="form-group">
+          <label>Date Of Birth</label>
+          <input type="date" [(ngModel)]="editEmp.dob" />
+        </div>
+        <div class="form-group gender-group">
+          <label>Gender :</label>
+          <label><input type="radio" [(ngModel)]="editEmp.gender" value="Male" name="editGender" /> Male</label>
+          <label><input type="radio" [(ngModel)]="editEmp.gender" value="Female" name="editGender" /> Female</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Country</label>
+          <select [(ngModel)]="editEmp.country" (change)="onEditCountryChange()">
+            <option value="">--Select Country--</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <select [(ngModel)]="editEmp.city">
+            <option value="">--Select City--</option>
+            <option *ngFor="let city of editCities" [value]="city">{{ city }}</option>
+          </select>
+        </div>
+        <div class="form-group other-city-group">
+          <label><input type="checkbox" [(ngModel)]="editEmp.otherCity" /> Other City</label>
+          <input *ngIf="editEmp.otherCity" type="text" [(ngModel)]="editEmp.otherCityName" placeholder="Enter city" />
+        </div>
+      </div>
+
+      <div class="skills-section">
+        <h4 class="section-title">Skills</h4>
+        <div class="skills-grid">
+          <label *ngFor="let skill of skillsList">
+            <input type="checkbox" [checked]="editEmp.skills.includes(skill)" (change)="onEditSkillChange($event, skill)" />
+            {{ skill }}
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-save" (click)="updateEmployee()">Update</button>
+        <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</main>

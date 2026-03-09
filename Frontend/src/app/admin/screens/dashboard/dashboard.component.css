@@ -1,0 +1,101 @@
+/* ===== Main Layout ===== */
+.main {
+  background-color: #e8eef3;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.section.dashboard {
+  padding: 20px 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.col-lg-8 {
+  width: 100%;
+}
+
+/* ===== Header Section ===== */
+h1 {
+  font-size: 2rem;
+  font-weight: 400;
+  color: #333;
+  text-align: center;
+  margin: 30px 0 10px 0;
+  width: 100%;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* ===== Info Box (h3 section) ===== */
+.info-box {
+  background-color: #e8eef3;
+  padding: 10px 0 20px 0;
+  width: 100%;
+}
+
+.info-box h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  line-height: 1.6;
+  margin: 8px auto;
+  max-width: 900px;
+}
+
+/* ===== Card Box ===== */
+.card-box {
+  background-color: #ffffff;
+  border: 1px solid #dce3ea;
+  border-left: 4px solid #4a90d9;
+  border-radius: 4px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-box p {
+  font-size: 0.88rem;
+  color: #444;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.card-box a {
+  color: #4a90d9;
+  text-decoration: none;
+}
+
+.card-box a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Highlight Box (yellow) ===== */
+.highlight-box {
+  background-color: #ffff00;
+  border: 1px solid #dce3ea;
+  border-left: 4px solid #4a90d9;
+  border-radius: 4px;
+  padding: 12px 20px;
+}
+
+.highlight-box p {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  line-height: 1.6;
+}

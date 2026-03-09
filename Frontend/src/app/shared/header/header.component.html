@@ -1,0 +1,22 @@
+<header id="header" class="header fixed-top d-flex align-items-center">
+
+  <div class="d-flex align-items-center justify-content-between">
+    <a href="#/admin/dashboard" class="logo d-flex align-items-center">
+      <h2 class="mt-2">MAGNUS</h2>
+    </a>
+    <i class="bi bi-list toggle-sidebar-btn d-xl-block d-none" (click)="menuchange()"></i>
+  </div>
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+      <li class="nav-item">
+        <a (click)="logout()" class="nav-link d-flex align-items-center gap-1" style="cursor:pointer;">
+          <span class="p-3">
+            <i class="bi bi-box-arrow-right p-1"></i> Sign Out
+          </span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+</header>

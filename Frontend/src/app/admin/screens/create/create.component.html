@@ -1,0 +1,98 @@
+<main id="main" class="main">
+
+  <!-- Page Title -->
+  <div class="page-header">
+    <h2>Employee <span class="sub-title">Create</span></h2>
+    <div class="breadcrumb">
+      <a href="#/admin/dashboard">Home</a> &gt;
+      <a href="#">Employee</a> &gt;
+      <span>Create</span>
+    </div>
+  </div>
+
+  <section class="form-section">
+    <h4 class="section-title">Employee Details</h4>
+
+    <!-- Row 1: First Name, Last Name, Email -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" [(ngModel)]="employee.firstName" placeholder="First Name" />
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" [(ngModel)]="employee.lastName" placeholder="Last Name" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="employee.email" placeholder="Email Id" />
+      </div>
+    </div>
+
+    <!-- Row 2: Mobile, DOB, Gender -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="text" [(ngModel)]="employee.mobile" placeholder="Mobile No" />
+      </div>
+      <div class="form-group">
+        <label>Date Of Birth</label>
+        <input type="date" [(ngModel)]="employee.dob" />
+      </div>
+      <div class="form-group gender-group">
+        <label>Gender :</label>
+        <label><input type="radio" [(ngModel)]="employee.gender" value="Male" /> Male</label>
+        <label><input type="radio" [(ngModel)]="employee.gender" value="Female" /> Female</label>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="form-group full-width">
+      <label>Address</label>
+      <textarea [(ngModel)]="employee.address" placeholder="Address" rows="4"></textarea>
+    </div>
+
+    <!-- Country, City, Other City -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Country</label>
+        <select [(ngModel)]="employee.country" (change)="onCountryChange()">
+          <option value="">--Select Country--</option>
+          <option value="India">India</option>
+          <option value="USA">USA</option>
+          <option value="UK">UK</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <select [(ngModel)]="employee.city" [disabled]="!employee.country">
+          <option value="">--Select City--</option>
+          <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+        </select>
+      </div>
+      <div class="form-group other-city-group">
+        <label><input type="checkbox" [(ngModel)]="employee.otherCity" /> Other City</label>
+        <input *ngIf="employee.otherCity" type="text" [(ngModel)]="employee.otherCityName" placeholder="Enter city" />
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="skills-section">
+      <h4 class="section-title">Skills</h4>
+      <div class="skills-grid">
+        <label *ngFor="let skill of skillsList">
+          <input type="checkbox" [value]="skill" (change)="onSkillChange($event, skill)" />
+          {{ skill }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="form-actions">
+      <button class="btn-save" (click)="save()">Save</button>
+      <button class="btn-cancel" (click)="cancel()">Cancel</button>
+    </div>
+
+  </section>
+
+</main>
