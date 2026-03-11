@@ -6,6 +6,10 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule,ReactiveFormsModule  } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { StudentModule } from './student/student.module'
+import { adminScreensComponent } from './admin/screens/screens.component';
+import { DashboardComponent } from './admin/screens/dashboard/dashboard.component';
+import { CreateComponent } from './admin/screens/create/create.component';
+import { SearchComponent } from './admin/screens/search/search.component';
 
 // import { CreateComponent } from './admin/screens/create-old/create.component';
 // import { SearchComponent } from './admin/screens/search-old/search.component';
@@ -20,14 +24,39 @@ const routes: Routes = [
     path:'login',
     component:LoginComponent
   },
-  // {
-  //   path:'create',
-  //   component:CreateComponent
-  // },
-  // {
-  //   path:'search',
-  //   component:SearchComponent
-  // },
+  {
+    path:'dashboard',
+    component: adminScreensComponent,
+    canActivate : [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: DashboardComponent
+      }
+    ]
+  },
+  {
+    path:'create',
+    component: adminScreensComponent,
+    canActivate : [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: CreateComponent
+      }
+    ]
+  },
+  {
+    path:'search',
+    component: adminScreensComponent,
+    canActivate : [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: SearchComponent
+      }
+    ]
+  },
   {
     path:'login',
     component:LoginComponent

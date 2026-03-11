@@ -39,6 +39,8 @@ export class HeaderComponent {
   }
 
   logout(): void {
+    localStorage.removeItem('logindata');
+    localStorage.removeItem('studentprograms');
     this.router.navigateByUrl('/login');
   }
 

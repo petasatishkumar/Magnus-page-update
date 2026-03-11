@@ -4,7 +4,7 @@
   <div class="page-header">
     <h2>Employee <span class="sub-title">Create</span></h2>
     <div class="breadcrumb">
-      <a href="#/admin/dashboard">Home</a> &gt;
+      <a [routerLink]="['/dashboard']">Home</a> &gt;
       <a href="#">Employee</a> &gt;
       <span>Create</span>
     </div>
@@ -17,15 +17,19 @@
     <div class="form-row">
       <div class="form-group">
         <label>First Name</label>
-        <input type="text" [(ngModel)]="employee.firstName" placeholder="First Name" />
+        <input type="text" [(ngModel)]="employee.firstName" name="firstName" placeholder="First Name" />
+        <small class="field-error" *ngIf="isSubmitted && !employee.firstName.trim()">First name is required.</small>
       </div>
       <div class="form-group">
         <label>Last Name</label>
-        <input type="text" [(ngModel)]="employee.lastName" placeholder="Last Name" />
+        <input type="text" [(ngModel)]="employee.lastName" name="lastName" placeholder="Last Name" />
+        <small class="field-error" *ngIf="isSubmitted && !employee.lastName.trim()">Last name is required.</small>
       </div>
       <div class="form-group">
         <label>Email</label>
-        <input type="email" [(ngModel)]="employee.email" placeholder="Email Id" />
+        <input type="email" [(ngModel)]="employee.email" name="email" placeholder="Email Id" />
+        <small class="field-error" *ngIf="isSubmitted && !employee.email.trim()">Email is required.</small>
+        <small class="field-error" *ngIf="isSubmitted && employee.email.trim() && !hasValidEmail">Enter a valid email address.</small>
       </div>
     </div>
 
@@ -33,46 +37,53 @@
     <div class="form-row">
       <div class="form-group">
         <label>Mobile Number</label>
-        <input type="text" [(ngModel)]="employee.mobile" placeholder="Mobile No" />
+        <input type="text" [(ngModel)]="employee.mobile" name="mobile" placeholder="Mobile No" inputmode="numeric" maxlength="10" (input)="onMobileInput($event)" />
+        <small class="field-error" *ngIf="isSubmitted && !employee.mobile">Mobile number is required.</small>
+        <small class="field-error" *ngIf="isSubmitted && employee.mobile && employee.mobile.length !== 10">Mobile number must be 10 digits.</small>
       </div>
       <div class="form-group">
         <label>Date Of Birth</label>
-        <input type="date" [(ngModel)]="employee.dob" />
+        <input type="date" [(ngModel)]="employee.dob" name="dob" />
+        <small class="field-error" *ngIf="isSubmitted && !employee.dob">Date of birth is required.</small>
       </div>
       <div class="form-group gender-group">
         <label>Gender :</label>
-        <label><input type="radio" [(ngModel)]="employee.gender" value="Male" /> Male</label>
-        <label><input type="radio" [(ngModel)]="employee.gender" value="Female" /> Female</label>
+        <label><input type="radio" [(ngModel)]="employee.gender" name="gender" value="Male" /> Male</label>
+        <label><input type="radio" [(ngModel)]="employee.gender" name="gender" value="Female" /> Female</label>
       </div>
     </div>
 
     <!-- Address -->
     <div class="form-group full-width">
       <label>Address</label>
-      <textarea [(ngModel)]="employee.address" placeholder="Address" rows="4"></textarea>
+      <textarea [(ngModel)]="employee.address" name="address" placeholder="Address" rows="4"></textarea>
+      <small class="field-error" *ngIf="isSubmitted && !employee.address.trim()">Address is required.</small>
     </div>
 
     <!-- Country, City, Other City -->
     <div class="form-row">
       <div class="form-group">
         <label>Country</label>
-        <select [(ngModel)]="employee.country" (change)="onCountryChange()">
+        <select [(ngModel)]="employee.country" name="country" (change)="onCountryChange()">
           <option value="">--Select Country--</option>
           <option value="India">India</option>
           <option value="USA">USA</option>
           <option value="UK">UK</option>
         </select>
+        <small class="field-error" *ngIf="isSubmitted && !employee.country">Country is required.</small>
       </div>
       <div class="form-group">
         <label>City</label>
-        <select [(ngModel)]="employee.city" [disabled]="!employee.country">
+        <select [(ngModel)]="employee.city" name="city" [disabled]="!employee.country || employee.otherCity" (change)="onCityChange()">
           <option value="">--Select City--</option>
           <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
         </select>
+        <small class="field-error" *ngIf="isSubmitted && !selectedCity">Select a city or enter other city.</small>
       </div>
       <div class="form-group other-city-group">
-        <label><input type="checkbox" [(ngModel)]="employee.otherCity" /> Other City</label>
-        <input *ngIf="employee.otherCity" type="text" [(ngModel)]="employee.otherCityName" placeholder="Enter city" />
+        <label><input type="checkbox" [(ngModel)]="employee.otherCity" name="otherCity" [disabled]="!!employee.city" (change)="onOtherCityToggle()" /> Other City</label>
+        <input *ngIf="employee.otherCity" type="text" [(ngModel)]="employee.otherCityName" name="otherCityName" placeholder="Enter city" />
+        <small class="field-note" *ngIf="employee.city">Other city is disabled because a dropdown city is selected.</small>
       </div>
     </div>
 
@@ -89,8 +100,9 @@
 
     <!-- Buttons -->
     <div class="form-actions">
-      <button class="btn-save" (click)="save()">Save</button>
-      <button class="btn-cancel" (click)="cancel()">Cancel</button>
+      <div class="submit-error" *ngIf="apiError">{{ apiError }}</div>
+      <button type="button" class="btn-save" (click)="save()">Submit</button>
+      <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
     </div>
 
   </section>

@@ -2,30 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { EmployeeService } from 'src/app/core/services/employee.service';
+import { RouterModule } from '@angular/router';
+import { Employee, EmployeeService } from 'src/app/core/services/employee.service';
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
 
-  searchName: string = '';
-  searchMobile: string = '';
+  searchTerm: string = '';
 
-  allEmployees: any[] = [];
-  filteredEmployees: any[] = [];
+  allEmployees: Employee[] = [];
+  filteredEmployees: Employee[] = [];
 
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 1;
-  pagedEmployees: any[] = [];
+  pagedEmployees: Employee[] = [];
 
   // Delete Modal
   showDeleteModal: boolean = false;
-  employeeToDelete: any = null;
+  employeeToDelete: Employee | null = null;
 
   // Edit Modal
   showEditModal: boolean = false;
@@ -47,35 +47,63 @@ export class SearchComponent implements OnInit {
   constructor(
     private router: Router,
     private employeeService: EmployeeService
-  ) {}
+  ) { }
+
+  private getEmployeeId(employee: any): any {
+    return employee?._id ?? employee?.id;
+  }
 
   ngOnInit() {
     this.loadEmployees();
   }
 
   loadEmployees() {
-    // Always load fresh from localStorage
-    this.allEmployees = this.employeeService.getEmployees();
-    this.filteredEmployees = [...this.allEmployees];
-    this.updatePagination();
+    this.employeeService.getEmployees().subscribe({
+      next: (employees) => {
+        this.allEmployees = employees;
+        this.filteredEmployees = [...employees];
+        this.currentPage = 1;
+        this.updatePagination();
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   // ---- Search ----
   search() {
-    this.filteredEmployees = this.allEmployees.filter(emp => {
-      const nameMatch =
-        emp.firstName.toLowerCase().includes(this.searchName.toLowerCase()) ||
-        emp.lastName.toLowerCase().includes(this.searchName.toLowerCase());
-      const mobileMatch = emp.mobile.includes(this.searchMobile);
-      return (this.searchName ? nameMatch : true) && (this.searchMobile ? mobileMatch : true);
+    const normalizedSearch = this.searchTerm.trim().toLowerCase();
+
+    if (!normalizedSearch) {
+      this.filteredEmployees = [...this.allEmployees];
+      this.currentPage = 1;
+      this.updatePagination();
+      return;
+    }
+
+    this.filteredEmployees = this.allEmployees.filter((emp) => {
+      const searchableValues = [
+        emp.firstName,
+        emp.lastName,
+        emp.mobile,
+        emp.email,
+        emp.gender,
+        emp.dob,
+        emp.country,
+        emp.city,
+        ...(emp.skills || [])
+      ];
+
+      return searchableValues.some((value) =>
+        String(value || '').toLowerCase().includes(normalizedSearch)
+      );
     });
+
     this.currentPage = 1;
     this.updatePagination();
   }
 
   clear() {
-    this.searchName = '';
-    this.searchMobile = '';
+    this.searchTerm = '';
     this.filteredEmployees = [...this.allEmployees];
     this.currentPage = 1;
     this.updatePagination();
@@ -95,18 +123,52 @@ export class SearchComponent implements OnInit {
   }
 
   // ---- Delete ----
-  confirmDelete(emp: any) {
+  confirmDelete(emp: Employee) {
     this.employeeToDelete = emp;
     this.showDeleteModal = true;
   }
 
   deleteEmployee() {
-    // Delete from localStorage via service
-    this.employeeService.deleteEmployee(this.employeeToDelete.id);
-    this.showDeleteModal = false;
-    this.employeeToDelete = null;
-    // Reload from localStorage
-    this.loadEmployees();
+    const id = this.getEmployeeId(this.employeeToDelete);
+    if (!id) {
+      return;
+    }
+
+    this.employeeService.deleteEmployee(id).subscribe({
+      next: () => {
+        this.showDeleteModal = false;
+        this.employeeToDelete = null;
+        this.loadEmployees();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  updateEmployee() {
+    const id = this.getEmployeeId(this.editEmp);
+    if (!id) {
+      return;
+    }
+
+    const payload = {
+      first_name: this.editEmp.firstName,
+      last_name: this.editEmp.lastName,
+      mobile_no: this.editEmp.mobile,
+      email_id: this.editEmp.email,
+      gender: this.editEmp.gender,
+      birth_date: this.editEmp.dob,
+      country: this.editEmp.country,
+      city: this.editEmp.otherCity ? this.editEmp.otherCityName : this.editEmp.city,
+      course: (this.editEmp.skills || []).join(', ')
+    };
+
+    this.employeeService.updateEmployee(id, payload).subscribe({
+      next: () => {
+        this.showEditModal = false;
+        this.loadEmployees();
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   cancelDelete() {
@@ -115,7 +177,7 @@ export class SearchComponent implements OnInit {
   }
 
   // ---- Edit ----
-  editEmployee(emp: any) {
+  editEmployee(emp: Employee) {
     this.editEmp = { ...emp, skills: [...(emp.skills || [])] };
     this.editCities = this.cityMap[this.editEmp.country] || [];
     this.showEditModal = true;
@@ -128,6 +190,7 @@ export class SearchComponent implements OnInit {
 
   onEditSkillChange(event: Event, skill: string) {
     const checked = (event.target as HTMLInputElement).checked;
+    this.editEmp.skills = this.editEmp.skills || [];
     if (checked) {
       if (!this.editEmp.skills.includes(skill)) this.editEmp.skills.push(skill);
     } else {
@@ -135,13 +198,14 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  updateEmployee() {
-    // Update in localStorage via service
-    this.employeeService.updateEmployee({ ...this.editEmp });
-    this.showEditModal = false;
-    // Reload from localStorage
-    this.loadEmployees();
+  onEditMobileInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const sanitizedValue = input.value.replace(/\D/g, '').slice(0, 10);
+    this.editEmp.mobile = sanitizedValue;
+    input.value = sanitizedValue;
   }
+
+
 
   cancelEdit() {
     this.showEditModal = false;
@@ -149,7 +213,7 @@ export class SearchComponent implements OnInit {
 
   // ---- Navigate ----
   goToCreate() {
-    this.router.navigate(['/admin/create']);
+    this.router.navigate(['/create']);
   }
 
 }

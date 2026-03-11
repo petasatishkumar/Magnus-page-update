@@ -109,6 +109,18 @@
   resize: vertical;
 }
 
+.field-error {
+  color: #dc3545;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+.field-note {
+  color: #6c757d;
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
 /* Gender */
 .gender-group {
   flex-direction: row;
@@ -163,8 +175,16 @@
 .form-actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+}
+
+.submit-error {
+  color: #dc3545;
+  font-size: 0.82rem;
+  margin-right: auto;
 }
 
 .btn-save {

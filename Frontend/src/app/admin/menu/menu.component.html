@@ -13,7 +13,7 @@
 
     <!-- home -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#/dashboard">
+      <a class="nav-link collapsed" [routerLink]="['/dashboard']">
         <i class="bi bi-journal-text"></i><span>Home</span>
       </a>
     </li>
@@ -25,12 +25,12 @@
       </a>
       <ul id="employee-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="#/create">
+          <a [routerLink]="['/create']">
             <i class="bi bi-circle"></i><span>Create</span>
           </a>
         </li>
         <li>
-          <a href="#/search">
+          <a [routerLink]="['/search']">
             <i class="bi bi-circle"></i><span>Search</span>
           </a>
         </li>

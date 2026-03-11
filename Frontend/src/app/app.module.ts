@@ -39,6 +39,8 @@ import { NgSelectModule } from "@ng-select/ng-select";
     DataTablesModule,
     NgSelectModule,
     FormsModule,
+    HttpClientModule
+
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

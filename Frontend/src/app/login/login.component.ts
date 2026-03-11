@@ -43,6 +43,10 @@ export class LoginComponent {
       this.enteredPassword === this.password
     ) {
       this.errorMessage = '';
+      localStorage.setItem('logindata', JSON.stringify({
+        email: this.enteredEmail,
+        role: 'admin'
+      }));
       this.router.navigate(['/dashboard']);
     } else {
       this.errorMessage = 'Invalid email or password. Please try again.';

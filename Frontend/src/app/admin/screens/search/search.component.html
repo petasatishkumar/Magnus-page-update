@@ -4,7 +4,7 @@
   <div class="page-header">
     <h2>Employee <span class="sub-title">Search</span></h2>
     <div class="breadcrumb">
-      <a href="#/admin/dashboard">Home</a> &gt;
+      <a [routerLink]="['/dashboard']">Home</a> &gt;
       <a href="#">Employee</a> &gt;
       <span>Search</span>
     </div>
@@ -15,23 +15,23 @@
     <!-- Search Bar -->
     <div class="search-header">
       <h4 class="section-title">Search Employee</h4>
-      <button class="btn-add" (click)="goToCreate()">Add Employee</button>
+      <button type="button" class="btn-add" (click)="goToCreate()">Add Employee</button>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Name</label>
-        <input type="text" [(ngModel)]="searchName" placeholder="Employee Name" />
-      </div>
-      <div class="form-group">
-        <label>Mobile No</label>
-        <input type="text" [(ngModel)]="searchMobile" placeholder="Mobile No" />
+        <label>Search</label>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search by Employee Details"
+        />
       </div>
       <div class="form-group btn-group-search">
         <label>&nbsp;</label>
         <div class="d-flex gap-8">
-          <button class="btn-search" (click)="search()">Search</button>
-          <button class="btn-clear" (click)="clear()">Clear</button>
+          <button type="button" class="btn-search" (click)="search()">Search</button>
+          <button type="button" class="btn-clear" (click)="clear()">Clear</button>
         </div>
       </div>
     </div>
@@ -66,8 +66,8 @@
             <td>{{ emp.country }}</td>
             <td>{{ emp.city }}</td>
             <td class="action-btns">
-              <button class="btn-edit" (click)="editEmployee(emp)">Edit</button>
-              <button class="btn-delete" (click)="confirmDelete(emp)">Delete</button>
+              <button type="button" class="btn-edit" (click)="editEmployee(emp)">Edit</button>
+              <button type="button" class="btn-delete" (click)="confirmDelete(emp)">Delete</button>
             </td>
           </tr>
           <tr *ngIf="pagedEmployees.length === 0">
@@ -79,11 +79,11 @@
 
     <!-- Pagination -->
     <div class="pagination">
-      <button (click)="goToPage(1)" [disabled]="currentPage === 1">First</button>
-      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+      <button type="button" (click)="goToPage(1)" [disabled]="currentPage === 1">First</button>
+      <button type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
       <span>{{ currentPage }} of {{ totalPages }} Pages</span>
-      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
-      <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">Last</button>
+      <button type="button" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+      <button type="button" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">Last</button>
     </div>
 
   </section>
@@ -91,12 +91,12 @@
   <!-- Delete Confirm Modal -->
   <div class="modal-overlay" *ngIf="showDeleteModal">
     <div class="modal-box">
-      <button class="modal-close" (click)="cancelDelete()">&#10005;</button>
+      <button type="button" class="modal-close" (click)="cancelDelete()">&#10005;</button>
       <div class="modal-icon">!</div>
       <p class="modal-text">Are you sure you want to delete?</p>
       <div class="modal-actions">
-        <button class="btn-yes" (click)="deleteEmployee()">Yes</button>
-        <button class="btn-no" (click)="cancelDelete()">Cancel</button>
+        <button type="button" class="btn-yes" (click)="deleteEmployee()">Yes</button>
+        <button type="button" class="btn-no" (click)="cancelDelete()">Cancel</button>
       </div>
     </div>
   </div>
@@ -104,7 +104,7 @@
   <!-- Edit Modal -->
   <div class="modal-overlay" *ngIf="showEditModal">
     <div class="modal-box edit-modal">
-      <button class="modal-close" (click)="cancelEdit()">&#10005;</button>
+      <button type="button" class="modal-close" (click)="cancelEdit()">&#10005;</button>
 
       <div class="page-header" style="margin-bottom:16px;">
         <h2>Employee <span class="sub-title">Edit</span></h2>
@@ -135,7 +135,13 @@
       <div class="form-row">
         <div class="form-group">
           <label>Mobile Number</label>
-          <input type="text" [(ngModel)]="editEmp.mobile" />
+          <input
+            type="text"
+            [(ngModel)]="editEmp.mobile"
+            inputmode="numeric"
+            maxlength="10"
+            (input)="onEditMobileInput($event)"
+          />
         </div>
         <div class="form-group">
           <label>Date Of Birth</label>
@@ -175,15 +181,15 @@
         <h4 class="section-title">Skills</h4>
         <div class="skills-grid">
           <label *ngFor="let skill of skillsList">
-            <input type="checkbox" [checked]="editEmp.skills.includes(skill)" (change)="onEditSkillChange($event, skill)" />
+            <input type="checkbox" [checked]="(editEmp.skills || []).includes(skill)" (change)="onEditSkillChange($event, skill)" />
             {{ skill }}
           </label>
         </div>
       </div>
 
       <div class="form-actions">
-        <button class="btn-save" (click)="updateEmployee()">Update</button>
-        <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+        <button type="button" class="btn-save" (click)="updateEmployee()">Update</button>
+        <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
       </div>
     </div>
   </div>
